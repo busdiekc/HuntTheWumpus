@@ -8,7 +8,7 @@ public class Room {
 	protected ArrayList<ClientProxy> players;
 
 	/** Rooms that this room is connected to. */
-	protected HashSet<Room> connected;
+	protected ArrayList<Room> connected;
 
 	/** ID number of this room. */
 	protected int roomId;
@@ -16,7 +16,7 @@ public class Room {
 	/** Constructor. */
 	public Room() {
 		players = new ArrayList<ClientProxy>();
-		connected = new HashSet<Room>();
+		connected = new ArrayList<Room>();
 	}
 	
 	/** Set this room's id number. */
@@ -58,15 +58,17 @@ public class Room {
 	/** Returns a string describing what a player sees in this room. */
 	public synchronized ArrayList<String> getSensed() {
 		ArrayList<String> msg = new ArrayList<String>();
-		msg.add("You are in an empty room.");
+		msg.add("You are in room " + getIdNumber());
 		String t = "You see tunnels to rooms ";
 		int c = 0;
 		for(Room r : connected) {
 			++c;
 			if(c == connected.size()) {
-				t = t.concat("and " + r.getIdNumber() + ".");
+				if (this != r)
+					t = t.concat("and " + r.getIdNumber() + ".");
  			} else {
- 				t = t.concat("" + r.getIdNumber() + ", ");
+ 				if (this != r)
+ 					t = t.concat("" + r.getIdNumber() + ", ");
  			}
 		}
 		msg.add(t);

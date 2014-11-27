@@ -38,21 +38,16 @@ public class CaveServer {
 		rooms = new ArrayList<Room>();
 		for(int i=0; i<20; ++i) {
 			rooms.add(new Room());
+			rooms.get(i).setIdNumber(i);
 		}
 
 		// connect them to each other:
 		for(int i=0; i<20; ++i) {
 			rooms.get(i).connectRoom(rooms.get((i+1)%20));
 			rooms.get(i).connectRoom(rooms.get((i+2)%20));
+			rooms.get(i).connectRoom(rooms.get((i+3)%20));
 		}
 
-		// and give them random ids:
-		HashSet<Integer> ids = new HashSet<Integer>();
-		for(int i=0; i<20; ++i) {
-			int r = rng.nextInt(100);
-			while(ids.contains(r)) { r = rng.nextInt(100); }
-			rooms.get(i).setIdNumber(r);
-		}
 	}
 
 	/** Returns the port number to use for accepting client connections. */
@@ -152,6 +147,16 @@ public class CaveServer {
 								// client has to leave the room: r.leaveRoom(client)
 								// and enter the new room: newRoom.enterRoom(client)
 								// send the client new senses here: client.sendSenses(r.getSensed());
+								String[] action = line.split(" ");
+								int roomNumber = Integer.parseInt(action[2]);
+								
+								r.leaveRoom(client);
+								
+								if (r.getRoom(roomNumber) != null) {
+									r = r.getRoom(roomNumber);
+									r.enterRoom(client);
+									client.sendSenses(r.getSensed());
+								}
 
 							} else if(line.startsWith(Protocol.SHOOT_ACTION)) {
 								// shoot an arrow: split out the room number into which the arrow
