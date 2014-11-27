@@ -13,10 +13,17 @@ public class Room {
 	/** ID number of this room. */
 	protected int roomId;
 	
+	protected boolean hasBats;
+	protected boolean hasPit;
+	protected boolean hasWumpus;
+	
 	/** Constructor. */
 	public Room() {
 		players = new ArrayList<ClientProxy>();
 		connected = new ArrayList<Room>();
+		hasBats = false;
+		hasPit = false;
+		hasWumpus = false;
 	}
 	
 	/** Set this room's id number. */
@@ -59,6 +66,13 @@ public class Room {
 	public synchronized ArrayList<String> getSensed() {
 		ArrayList<String> msg = new ArrayList<String>();
 		msg.add("You are in room " + getIdNumber());
+		
+		/*if (hasBats) {
+			msg.add("There are bats in this room");
+			return msg;
+		}*/
+		
+		// tell the player what rooms he/she sees
 		String t = "You see tunnels to rooms ";
 		int c = 0;
 		for(Room r : connected) {
@@ -71,6 +85,28 @@ public class Room {
  					t = t.concat("" + r.getIdNumber() + ", ");
  			}
 		}
+		
+		// tells the player what is in their room
+		if (this.hasBats)
+			t = t.concat("\nThere are bats in this room.");
+		if (this.hasPit)
+			t = t.concat("\nThere isn't a floor in here.");
+		if (this.hasWumpus)
+			t = t.concat("\nThere is a wumpus in here.");
+		
+		
+		// player senses what is in adjacent rooms
+		for (Room r : connected) {
+			if (r != this) {	
+				if (r.hasBats)
+					t = t.concat("\nYou hear flapping!");
+				if (r.hasPit)
+					t = t.concat("\nYou feel a breeze.");
+				if (r.hasWumpus)
+					t = t.concat("\nYou smell something foul.");
+			}
+		}
+		
 		msg.add(t);
 		return msg;
 	}

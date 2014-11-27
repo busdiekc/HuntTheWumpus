@@ -47,6 +47,21 @@ public class CaveServer {
 			rooms.get(i).connectRoom(rooms.get((i+2)%20));
 			rooms.get(i).connectRoom(rooms.get((i+3)%20));
 		}
+		
+		// assign bats
+		for (int i = 0; i < 20; i++) {
+			if (rng.nextInt(101) < 20)
+				rooms.get(i).hasBats = true;
+		}
+		
+		// assign pits
+		for (int i = 0; i < 20; i++) {
+			if (rng.nextInt(101) < 18)
+				rooms.get(i).hasPit = true;
+		}
+		
+		// assign the wumpus
+		rooms.get(rng.nextInt(20)).hasWumpus = true;
 
 	}
 
@@ -156,6 +171,30 @@ public class CaveServer {
 									r = r.getRoom(roomNumber);
 									r.enterRoom(client);
 									client.sendSenses(r.getSensed());
+									
+									// trying to make bats teleport player, NOT WORKING!
+									/*if (r.hasBats) {
+										ArrayList<String> msg = new ArrayList<String> ();
+										msg.add("You have been teleported to a random room by pesky bats.");
+										client.sendNotifications(msg);
+										
+										
+										int newRndRoom;
+										do {
+											newRndRoom = rng.nextInt(20);
+										} while (r.getRoom(newRndRoom) != null);
+										System.out.println(r.getIdNumber());
+										System.out.println(newRndRoom);
+										r.leaveRoom(client);
+										
+										if (r.getRoom(newRndRoom) != null) {
+											r = r.getRoom(newRndRoom);
+											System.out.println(r.getIdNumber());
+											r.enterRoom(client);
+											client.sendSenses(r.getSensed());
+										}
+									}*/
+										
 								}
 
 							} else if(line.startsWith(Protocol.SHOOT_ACTION)) {
@@ -185,7 +224,7 @@ public class CaveServer {
 				} finally {
 					// make sure the client leaves whichever room they're in,
 					// and close the client's socket: 
-					r.leaveRoom(client);
+					//r.leaveRoom(client);
 					client.close();
 				}
 			} catch(Exception ex) {
