@@ -65,6 +65,12 @@ public class CaveServer {
 		
 		// assign the ladder
 		rooms.get(rng.nextInt(20)).hasLadder = true;
+		
+		// put gold and arrows in rooms for testing
+		rooms.get(10).gold = 100;
+		rooms.get(10).arrows = 3;
+		rooms.get(11).gold = 200;
+		rooms.get(12).arrows = 4;
 
 	}
 
@@ -215,13 +221,24 @@ public class CaveServer {
 
 							} else if(line.startsWith(Protocol.PICKUP_ACTION)) {
 								// pickup gold / arrows.
+								ArrayList<String> pickupStuff = new ArrayList<String> ();
+								
 								if (r.gold > 0) {
-									
+									gold += r.gold;
+									pickupStuff.add("You found " + r.gold + " gold doubloons!");
+									r.gold = 0;
 								}
 								
 								if (r.arrows > 0) {
-									
+									arrows += r.arrows;
+									pickupStuff.add("You found " + r.arrows + " arrows!");
+									r.arrows = 0;
 								}
+								
+								if (pickupStuff.isEmpty())
+									pickupStuff.add("Nothing to pick up.");
+								
+								client.sendNotifications(pickupStuff);
 								
 							} else if(line.startsWith(Protocol.CLIMB_ACTION)) {
 								// climb the ladder, if the player is in a room with a ladder.
