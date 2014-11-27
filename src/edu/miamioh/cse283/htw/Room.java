@@ -104,6 +104,12 @@ public class Room {
 		if (this.hasWumpus)
 			t = t.concat("\nThere is a wumpus in here.");
 		
+		// tells the player if there is gold or arrows in his/her room
+		if (this.gold > 0)
+			t = t.concat("\nSomething glimmers around your feet.");
+		if (this.arrows > 0)
+			t = t.concat("\nSomething poked your big toe.");
+		
 		
 		// player senses what is in adjacent rooms
 		for (Room r : connected) {

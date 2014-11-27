@@ -255,7 +255,7 @@ public class CaveServer {
 								else {
 									ArrayList<String> endGameMsg = new ArrayList<String> ();
 									endGameMsg.add("\nCongratulations you've survived the trials and tribulations of this cave!");
-									endGameMsg.add("\nYou collected "  + gold + " gold doubloons.");
+									endGameMsg.add("\nYou collected "  + gold + " gold doubloons during your adventure.");
 									endGameMsg.add("\nGoodbye!");
 									client.sendNotifications(endGameMsg);
 									kill();
