@@ -22,11 +22,13 @@ public class Client {
 	
 	/** Boolean representing whether the player is alive or not. */
 	protected boolean alive;
+	
 
 	/** Constructor. */
 	public Client(CaveServerProxy cave) {
 		this.cave = cave;
 		this.alive = true;
+
 	}
 	
 	/** Returns an array filled with lines read from the cave server until end is reached. 

@@ -62,6 +62,9 @@ public class CaveServer {
 		
 		// assign the wumpus
 		rooms.get(rng.nextInt(20)).hasWumpus = true;
+		
+		// assign the ladder
+		rooms.get(rng.nextInt(20)).hasLadder = true;
 
 	}
 
@@ -83,12 +86,17 @@ public class CaveServer {
 
 		/** Whether this player is alive. */
 		protected boolean alive;
+		
+		protected int gold;
+		protected int arrows;		
 
 		/** Constructor. */
 		public ClientThread(ClientProxy client) {
 			this.client = client;
 			this.notifications = new ArrayList<String>();
 			this.alive = true;
+			this.gold = 0;
+			this.arrows = 0;
 		}
 
 		/** Returns true if there are notifications that should be sent to this client. */
@@ -162,6 +170,7 @@ public class CaveServer {
 								// client has to leave the room: r.leaveRoom(client)
 								// and enter the new room: newRoom.enterRoom(client)
 								// send the client new senses here: client.sendSenses(r.getSensed());
+								
 								String[] action = line.split(" ");
 								int roomNumber = Integer.parseInt(action[2]);
 								
@@ -171,6 +180,8 @@ public class CaveServer {
 									r = r.getRoom(roomNumber);
 									r.enterRoom(client);
 									client.sendSenses(r.getSensed());
+									
+									
 									
 									// trying to make bats teleport player, NOT WORKING!
 									/*if (r.hasBats) {
@@ -204,12 +215,34 @@ public class CaveServer {
 
 							} else if(line.startsWith(Protocol.PICKUP_ACTION)) {
 								// pickup gold / arrows.
-
+								if (r.gold > 0) {
+									
+								}
+								
+								if (r.arrows > 0) {
+									
+								}
+								
 							} else if(line.startsWith(Protocol.CLIMB_ACTION)) {
 								// climb the ladder, if the player is in a room with a ladder.
 								// send a notification telling the player his score
 								// and some kind of congratulations, and then kill
 								// the player to end the game -- call kill(), above.
+								
+								if (!r.hasLadder) {
+									ArrayList<String> noLadder = new ArrayList<String> ();
+									noLadder.add("There isn't a ladder in here!");
+									client.sendNotifications(noLadder);
+								}
+								
+								else {
+									ArrayList<String> endGameMsg = new ArrayList<String> ();
+									endGameMsg.add("\nCongratulations you've survived the trials and tribulations of this cave!");
+									endGameMsg.add("\nYou collected "  + gold + " gold doubloons.");
+									endGameMsg.add("\nGoodbye!");
+									client.sendNotifications(endGameMsg);
+									kill();
+								}
 								
 							} else if(line.startsWith(Protocol.QUIT)) {
 								// no response: drop gold and arrows, and break.

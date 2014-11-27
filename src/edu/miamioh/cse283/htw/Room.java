@@ -16,6 +16,10 @@ public class Room {
 	protected boolean hasBats;
 	protected boolean hasPit;
 	protected boolean hasWumpus;
+	protected boolean hasLadder;
+	protected int gold;
+	protected int arrows;
+	
 	
 	/** Constructor. */
 	public Room() {
@@ -24,6 +28,8 @@ public class Room {
 		hasBats = false;
 		hasPit = false;
 		hasWumpus = false;
+		gold = 0;
+		arrows = 0;
 	}
 	
 	/** Set this room's id number. */
@@ -85,6 +91,10 @@ public class Room {
  					t = t.concat("" + r.getIdNumber() + ", ");
  			}
 		}
+		
+		// tells the player if this room has the ladder
+		if (this.hasLadder)
+			t = t.concat("\nYou've found the ladder!");
 		
 		// tells the player what is in their room
 		if (this.hasBats)
