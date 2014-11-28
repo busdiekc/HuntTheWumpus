@@ -48,23 +48,29 @@ public class CaveServer {
 			rooms.get(i).connectRoom(rooms.get((i+3)%20));
 		}
 		
+		// assign the ladder
+		rooms.get(rng.nextInt(20)).hasLadder = true;
+		
 		// assign bats
 		for (int i = 0; i < 20; i++) {
 			if (rng.nextInt(101) < 15)
 				rooms.get(i).hasBats = true;
+			
+			if (rooms.get(i).hasLadder = true)
+				rooms.get(i).hasBats = false;
 		}
 		
 		// assign pits
 		for (int i = 0; i < 20; i++) {
 			if (rng.nextInt(101) < 12)
 				rooms.get(i).hasPit = true;
+			
+			if (rooms.get(i).hasLadder = true)
+				rooms.get(i).hasPit = false;
 		}
 		
 		// assign the wumpus
 		rooms.get(rng.nextInt(20)).hasWumpus = true;
-		
-		// assign the ladder
-		rooms.get(rng.nextInt(20)).hasLadder = true;
 		
 		
 
@@ -192,31 +198,21 @@ public class CaveServer {
 										client.died();
 									}
 									
-									
-									
-									// trying to make bats teleport player, NOT WORKING!
-									/*if (r.hasBats) {
-										ArrayList<String> msg = new ArrayList<String> ();
-										msg.add("You have been teleported to a random room by pesky bats.");
-										client.sendNotifications(msg);
+									if (r.hasBats) {
+										ArrayList<String> response = new ArrayList<String> ();
+										response.add("You've been teleported to a random room by pesky bats!");
+										client.sendNotifications(response);
 										
-										
-										int newRndRoom;
-										do {
-											newRndRoom = rng.nextInt(20);
-										} while (r.getRoom(newRndRoom) != null);
-										System.out.println(r.getIdNumber());
-										System.out.println(newRndRoom);
+										int randomRoom = rng.nextInt(20);
 										r.leaveRoom(client);
+										r = rooms.get(randomRoom);
+										r.enterRoom(client);
 										
-										if (r.getRoom(newRndRoom) != null) {
-											r = r.getRoom(newRndRoom);
-											System.out.println(r.getIdNumber());
-											r.enterRoom(client);
-											client.sendSenses(r.getSensed());
-										}
-									}*/
+										client.sendSenses(r.getSensed());
 										
+									}
+									
+																			
 								}
 
 							} else if(line.startsWith(Protocol.SHOOT_ACTION)) {
