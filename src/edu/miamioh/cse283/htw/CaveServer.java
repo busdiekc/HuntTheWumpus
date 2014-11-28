@@ -185,6 +185,13 @@ public class CaveServer {
 									r.enterRoom(client);
 									client.sendSenses(r.getSensed());
 									
+									if (r.hasPit) {
+										ArrayList<String> response = new ArrayList<String> ();
+										response.add("You've fallen into a pit and died!");
+										client.sendNotifications(response);
+										client.died();
+									}
+									
 									
 									
 									// trying to make bats teleport player, NOT WORKING!
