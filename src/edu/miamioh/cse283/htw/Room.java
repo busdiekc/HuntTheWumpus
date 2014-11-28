@@ -19,6 +19,7 @@ public class Room {
 	protected boolean hasLadder;
 	protected int gold;
 	protected int arrows;
+	protected int arrowInFlight;
 	
 	
 	/** Constructor. */
@@ -30,6 +31,7 @@ public class Room {
 		hasWumpus = false;
 		gold = 0;
 		arrows = 0;
+		arrowInFlight = 0;
 	}
 	
 	/** Set this room's id number. */
@@ -71,7 +73,7 @@ public class Room {
 	/** Returns a string describing what a player sees in this room. */
 	public synchronized ArrayList<String> getSensed() {
 		ArrayList<String> msg = new ArrayList<String>();
-		msg.add("You are in room " + getIdNumber());
+		msg.add("\nYou are in room " + getIdNumber());
 		
 		/*if (hasBats) {
 			msg.add("There are bats in this room");

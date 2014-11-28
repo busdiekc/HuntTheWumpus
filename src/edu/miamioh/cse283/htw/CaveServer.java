@@ -50,13 +50,13 @@ public class CaveServer {
 		
 		// assign bats
 		for (int i = 0; i < 20; i++) {
-			if (rng.nextInt(101) < 20)
+			if (rng.nextInt(101) < 15)
 				rooms.get(i).hasBats = true;
 		}
 		
 		// assign pits
 		for (int i = 0; i < 20; i++) {
-			if (rng.nextInt(101) < 18)
+			if (rng.nextInt(101) < 12)
 				rooms.get(i).hasPit = true;
 		}
 		
@@ -66,11 +66,7 @@ public class CaveServer {
 		// assign the ladder
 		rooms.get(rng.nextInt(20)).hasLadder = true;
 		
-		// put gold and arrows in rooms for testing
-		rooms.get(10).gold = 100;
-		rooms.get(10).arrows = 3;
-		rooms.get(11).gold = 200;
-		rooms.get(12).arrows = 4;
+		
 
 	}
 
@@ -138,7 +134,9 @@ public class CaveServer {
 			try {				
 				// the first time a player connects, send a welcome message:
 				ArrayList<String> welcome = new ArrayList<String>();
-				welcome.add("Welcome!");
+				welcome.add("Welcome to your doom!");
+				welcome.add("Commands: \n1. (m)ove <Number> \n2. (s)hoot <Number> \n3. (p)ickup \n4. (cl)imb");
+				welcome.add("Escape the cave with the most gold!\n");
 				client.sendNotifications(welcome);
 
 				// Put the player in an initial room and send them their initial
@@ -218,6 +216,21 @@ public class CaveServer {
 								// shoot an arrow: split out the room number into which the arrow
 								// is to be shot, and then send an arrow into the right series of
 								// rooms.
+								
+								String[] action = line.split(" ");
+								int roomNumber = Integer.parseInt(action[2]);
+								ArrayList<String> response = new ArrayList<String> ();
+								
+								if (arrows > 0) {
+									if (r.getRoom(roomNumber) != null) {
+										r.connected.get(roomNumber).arrowInFlight += 1;
+										arrows -= 1;
+										response.add("Shots fired!");
+									} else 
+										response.add("Invalid room!");
+									
+									client.sendNotifications(response);
+								}
 
 							} else if(line.startsWith(Protocol.PICKUP_ACTION)) {
 								// pickup gold / arrows.
@@ -263,18 +276,28 @@ public class CaveServer {
 								
 							} else if(line.startsWith(Protocol.QUIT)) {
 								// no response: drop gold and arrows, and break.
+								r.gold += gold;
+								gold = 0;
+								r.arrows += arrows;
+								arrows = 0;
+								
 								break;
 
 							} else {
 								// invalid response; send the client some kind of error message
 								// (as a notificiation).
+								ArrayList<String> invalidInput = new ArrayList<String> ();
+								invalidInput.add("You did not enter a correct command.");
+								client.sendNotifications(invalidInput);
+								
 							}
 						}
 					}
 				} finally {
 					// make sure the client leaves whichever room they're in,
 					// and close the client's socket: 
-					//r.leaveRoom(client);
+					
+					r.leaveRoom(client);
 					client.close();
 				}
 			} catch(Exception ex) {
