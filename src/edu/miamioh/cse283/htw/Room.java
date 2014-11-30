@@ -75,11 +75,6 @@ public class Room {
 		ArrayList<String> msg = new ArrayList<String>();
 		msg.add("\nYou are in room " + getIdNumber());
 		
-		/*if (hasBats) {
-			msg.add("There are bats in this room");
-			return msg;
-		}*/
-		
 		// tell the player what rooms he/she sees
 		String t = "You see tunnels to rooms ";
 		int c = 0;
@@ -122,6 +117,8 @@ public class Room {
 					t = t.concat("\nYou feel a breeze.");
 				if (r.hasWumpus)
 					t = t.concat("\nYou smell something foul.");
+				if (!r.players.isEmpty())
+					t = t.concat("\nYou feel another presence.");
 			}
 		}
 		
