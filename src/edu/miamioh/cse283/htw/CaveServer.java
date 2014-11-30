@@ -233,21 +233,8 @@ public class CaveServer {
 									
 									rooms.get(wumpusRoom).hasWumpus = false;
 									rooms.get(newWumpRoom).hasWumpus = true;
-									wumpusRoom = newWumpRoom;
+									wumpusRoom = newWumpRoom;				
 									
-									/*for (Room rr : rooms)
-										if (rr.hasWumpus) {
-											rr.hasWumpus = false;
-											
-											int newWumpusRoom;
-											do {
-												newWumpusRoom = rng.nextInt(20);
-											} while (rr.getRoom(newWumpusRoom) == null);
-											
-											rr.getRoom(newWumpusRoom).hasWumpus = true;
-										}*/
-									
-																			
 								}
 
 							} else if(line.startsWith(Protocol.SHOOT_ACTION)) {
@@ -275,6 +262,17 @@ public class CaveServer {
 											r.getRoom(roomNumber).arrowInFlight -= 1;
 											
 										}
+										
+										if (!r.getRoom(roomNumber).players.isEmpty()) {
+											for (ClientProxy c : r.getRoom(roomNumber).players) {
+												response.add("You were shot by another player. You are now dead.");
+												c.sendNotifications(response);
+												r.getRoom(roomNumber).leaveRoom(c);
+												c.died();
+											}
+											
+										}
+											
 									} else 
 										response.add("Invalid room!");
 										
