@@ -54,19 +54,15 @@ public class CaveServer {
 		// assign bats
 		for (int i = 0; i < 20; i++) {
 			if (rng.nextInt(101) < 15)
-				rooms.get(i).hasBats = true;
-			
-			if (rooms.get(i).hasLadder = true)
-				rooms.get(i).hasBats = false;
+				if (rooms.get(i).hasLadder == false)
+					rooms.get(i).hasBats = true;
 		}
 		
 		// assign pits
 		for (int i = 0; i < 20; i++) {
 			if (rng.nextInt(101) < 12)
-				rooms.get(i).hasPit = true;
-			
-			if (rooms.get(i).hasLadder = true)
-				rooms.get(i).hasPit = false;
+				if (rooms.get(i).hasLadder == false)
+					rooms.get(i).hasPit = true;
 		}
 		
 		// assign the wumpus
@@ -104,7 +100,7 @@ public class CaveServer {
 			this.notifications = new ArrayList<String>();
 			this.alive = true;
 			this.gold = 0;
-			this.arrows = 0;
+			this.arrows = 3;
 		}
 
 		/** Returns true if there are notifications that should be sent to this client. */
@@ -251,9 +247,20 @@ public class CaveServer {
 								
 								if (arrows > 0) {
 									if (r.getRoom(roomNumber) != null) {
-										r.connected.get(roomNumber).arrowInFlight += 1;
+										r.getRoom(roomNumber).arrowInFlight += 1;
 										arrows -= 1;
 										response.add("Shots fired!");
+										
+										if (r.getRoom(roomNumber).hasWumpus) {
+											response.add("You've killed the wumpus!");
+											client.sendNotifications(response);
+											
+											r.getRoom(roomNumber).hasWumpus = false;
+											r.getRoom(roomNumber).gold += 500;
+											r.getRoom(roomNumber).arrows +=1;
+											r.getRoom(roomNumber).arrowInFlight -= 1;
+											
+										}
 									} else 
 										response.add("Invalid room!");
 										
@@ -262,7 +269,10 @@ public class CaveServer {
 									response.add("Not enough arrows!");
 									client.sendNotifications(response);
 								}
-
+								
+								if (r.getRoom(roomNumber) != null)
+									r.getRoom(roomNumber).arrowInFlight -= 1;
+								
 							} else if(line.startsWith(Protocol.PICKUP_ACTION)) {
 								// pickup gold / arrows.
 								ArrayList<String> pickupStuff = new ArrayList<String> ();
