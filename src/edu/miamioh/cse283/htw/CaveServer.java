@@ -191,6 +191,7 @@ public class CaveServer {
 										ArrayList<String> response = new ArrayList<String> ();
 										response.add("You've fallen into a pit and died!");
 										client.sendNotifications(response);
+										r.leaveRoom(client);
 										client.died();
 									}
 									
@@ -217,6 +218,7 @@ public class CaveServer {
 										gold = 0;
 										r.arrows += arrows;
 										arrows = 0;
+										r.leaveRoom(client);
 										client.died();
 									}
 									
