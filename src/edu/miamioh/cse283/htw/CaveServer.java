@@ -27,6 +27,8 @@ public class CaveServer {
 
 	/** Rooms in this CaveServer. */
 	protected ArrayList<Room> rooms;
+	
+	protected int wumpusRoom;
 
 	/** Constructor. */
 	public CaveServer(CaveSystemServerProxy caveSystem, int portBase) {
@@ -66,7 +68,9 @@ public class CaveServer {
 		}
 		
 		// assign the wumpus
-		rooms.get(rng.nextInt(20)).hasWumpus = true;
+		int wumpusRoom = rng.nextInt(20);
+		rooms.get(wumpusRoom).hasWumpus = true;
+		
 		
 		
 
@@ -221,6 +225,15 @@ public class CaveServer {
 										r.leaveRoom(client);
 										client.died();
 									}
+									
+									int newWumpRoom;
+									do {
+										newWumpRoom = rng.nextInt(20);
+									} while (rooms.get(wumpusRoom).getRoom(newWumpRoom) == null);
+									
+									rooms.get(wumpusRoom).hasWumpus = false;
+									rooms.get(newWumpRoom).hasWumpus = true;
+									wumpusRoom = newWumpRoom;
 									
 									/*for (Room rr : rooms)
 										if (rr.hasWumpus) {
