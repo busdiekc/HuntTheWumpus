@@ -224,6 +224,19 @@ public class CaveServer {
 										client.died();
 									}
 									
+									for (Room rr : rooms)
+										if (rr.hasWumpus) {
+											rr.hasWumpus = false;
+											
+											int newWumpusRoom;
+											do {
+												newWumpusRoom = rng.nextInt(20);
+											} while (rr.getRoom(newWumpusRoom) == null);
+											
+											rr = rr.getRoom(newWumpusRoom);
+											rr.hasWumpus = true;
+										}
+									
 																			
 								}
 
@@ -243,7 +256,10 @@ public class CaveServer {
 										response.add("Shots fired!");
 									} else 
 										response.add("Invalid room!");
-									
+										
+									client.sendNotifications(response);
+								} else {
+									response.add("Not enough arrows!");
 									client.sendNotifications(response);
 								}
 
