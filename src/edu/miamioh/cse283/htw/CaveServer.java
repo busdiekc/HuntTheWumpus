@@ -222,7 +222,7 @@ public class CaveServer {
 										client.died();
 									}
 									
-									for (Room rr : rooms)
+									/*for (Room rr : rooms)
 										if (rr.hasWumpus) {
 											rr.hasWumpus = false;
 											
@@ -231,9 +231,8 @@ public class CaveServer {
 												newWumpusRoom = rng.nextInt(20);
 											} while (rr.getRoom(newWumpusRoom) == null);
 											
-											rr = rr.getRoom(newWumpusRoom);
-											rr.hasWumpus = true;
-										}
+											rr.getRoom(newWumpusRoom).hasWumpus = true;
+										}*/
 									
 																			
 								}
@@ -253,7 +252,7 @@ public class CaveServer {
 										arrows -= 1;
 										response.add("Shots fired!");
 										
-										if (r.getRoom(roomNumber).hasWumpus) {
+										if (r.getRoom(roomNumber).hasWumpus && r.getRoom(roomNumber).arrowInFlight > 0) {
 											response.add("You've killed the wumpus!");
 											client.sendNotifications(response);
 											
@@ -314,6 +313,7 @@ public class CaveServer {
 									endGameMsg.add("\nYou collected "  + gold + " gold doubloons during your adventure.");
 									endGameMsg.add("\nGoodbye!");
 									client.sendNotifications(endGameMsg);
+									r.leaveRoom(client);
 									kill();
 								}
 								
