@@ -184,9 +184,9 @@ public class CaveServer {
 								String[] action = line.split(" ");
 								int roomNumber = Integer.parseInt(action[2]);
 								
-								r.leaveRoom(client);
 								
 								if (r.getRoom(roomNumber) != null) {
+									r.leaveRoom(client);
 									r = r.getRoom(roomNumber);
 									r.enterRoom(client);
 									client.sendSenses(r.getSensed());
@@ -210,6 +210,18 @@ public class CaveServer {
 										
 										client.sendSenses(r.getSensed());
 										
+									}
+									
+									if (r.hasWumpus) {
+										ArrayList<String> response = new ArrayList<String> ();
+										response.add("You have been killed by the Wumpus!");
+										client.sendNotifications(response);
+										
+										r.gold += gold;
+										gold = 0;
+										r.arrows += arrows;
+										arrows = 0;
+										client.died();
 									}
 									
 																			
