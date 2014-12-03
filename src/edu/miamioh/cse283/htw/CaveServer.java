@@ -272,7 +272,16 @@ public class CaveServer {
 											}
 											
 										}
-											
+										
+										int newWumpRoom;
+										do {
+											newWumpRoom = rng.nextInt(20);
+										} while (rooms.get(wumpusRoom).getRoom(newWumpRoom) == null);
+										
+										rooms.get(wumpusRoom).hasWumpus = false;
+										rooms.get(newWumpRoom).hasWumpus = true;
+										wumpusRoom = newWumpRoom;
+										
 									} else 
 										response.add("Invalid room!");
 										
